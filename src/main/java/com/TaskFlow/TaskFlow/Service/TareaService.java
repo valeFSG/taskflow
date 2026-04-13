@@ -34,7 +34,7 @@ public class TareaService {
         if (nuevo.getFechaLimite() == null)
             return false;
 
-        // Regla: no repetir titulo
+        // no repetir titulo
         boolean existe = repository.findAll().stream()
                 .anyMatch(t -> t.getTitulo().equalsIgnoreCase(nuevo.getTitulo()));
 
