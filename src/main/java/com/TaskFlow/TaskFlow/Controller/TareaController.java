@@ -28,6 +28,7 @@ public class TareaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id){
+
         Optional<Tarea> tarea = service.buscarPorId(id);
 
         if (tarea.isPresent())
@@ -45,13 +46,15 @@ public class TareaController {
         }
 
         if (service.guardar(tarea))
-            return new ResponseEntity<>("Tarea creada", HttpStatus.CREATED);
+            return new ResponseEntity<>("Tarea creada correctamente", HttpStatus.CREATED);
 
-        return new ResponseEntity<>("Error al crear tarea", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Error: datos invalidos o tarea duplicada", HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id,@Valid @RequestBody Tarea tarea,BindingResult result){
+    public ResponseEntity<?> update(@PathVariable Long id,
+                                   @Valid @RequestBody Tarea tarea,
+                                   BindingResult result){
 
         if (result.hasErrors()){
             return ResponseEntity.badRequest().body(result.getAllErrors());
@@ -60,23 +63,32 @@ public class TareaController {
         tarea.setId(id);
 
         if (service.actualizar(tarea))
-            return ResponseEntity.ok("Tarea actualizada");
+            return ResponseEntity.ok("Tarea actualizada correctamente");
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Tarea no encontrada");
+                .body("Tarea no encontrada o fecha invalida");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
 
-        if (service.eliminar(id))
-            return ResponseEntity.noContent().build();
+    if (service.eliminar(id))
+        return ResponseEntity.noContent().build();
 
-        return ResponseEntity.notFound().build();
-    }
+    return ResponseEntity.notFound().build();
+}
 
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<Tarea>> getByEstado(@PathVariable String estado){
         return ResponseEntity.ok(service.buscarPorEstado(estado));
+    }
+
+    @PutMapping("/completar/{id}")
+    public ResponseEntity<String> completar(@PathVariable Long id){
+
+        if (service.completarTarea(id))
+            return ResponseEntity.ok("Tarea completada correctamente");
+
+        return ResponseEntity.badRequest().body("No se pudo completar la tarea");
     }
 }

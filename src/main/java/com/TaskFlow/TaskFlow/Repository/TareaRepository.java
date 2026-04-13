@@ -35,9 +35,18 @@ public class TareaRepository {
     }
 
     public boolean delete(Long id) {
-        return lista.removeIf(t -> t.getId().equals(id));
+
+    Optional<Tarea> tareaOpt = lista.stream()
+            .filter(t -> t.getId().equals(id))
+            .findFirst();
+
+    if (tareaOpt.isPresent()) {
+        lista.remove(tareaOpt.get());
+        return true;
     }
 
+    return false;
+    }
     public Tarea update(Tarea tarea) {
         for (int i = 0; i < lista.size(); i++) {
             if (lista.get(i).getId().equals(tarea.getId())) {
