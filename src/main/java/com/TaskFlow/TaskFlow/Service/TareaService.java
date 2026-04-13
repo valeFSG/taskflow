@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.TaskFlow.TaskFlow.Model.Tarea;
 import com.TaskFlow.TaskFlow.Repository.TareaRepository;
-
+// Servicio principal del microservicio TaskFlow
 @Service
+
 public class TareaService {
 
     @Autowired
@@ -23,7 +24,7 @@ public class TareaService {
     public Optional<Tarea> buscarPorId(Long id){
         return repository.findById(id);
     }
-
+// Validación basica de datos antes de guardar la tarea
     public boolean guardar(Tarea nuevo){
         if (nuevo.getTitulo() == null || nuevo.getTitulo().isBlank())
             return false;
